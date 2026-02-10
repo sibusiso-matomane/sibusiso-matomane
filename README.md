@@ -1,7 +1,7 @@
 # Sibusiso Matomane
 
 Systems Risk & Regime Analysis  
-Model–Reality Divergence Detection  
+Model Reality Divergence Detection  
 Structural Diagnostics for AI & Complex Systems
 
 ---
