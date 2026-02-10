@@ -1,16 +1,33 @@
-## Hi there 👋
+# Sibusiso Matomane
 
-<!--
-**sibusiso-matomane/sibusiso-matomane** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Systems Risk & Regime Analysis  
+Model–Reality Divergence Detection  
+Structural Diagnostics for AI & Complex Systems
 
-Here are some ideas to get you started:
+---
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+## Focus
+
+I work on identifying when systems begin diverging from real-world constraints.
+
+Areas of interest:
+
+- Structural reasoning audit
+- AI output validation
+- Regime change detection
+- Constraint-driven analysis
+- Coordination failure diagnostics
+
+---
+
+## Current Project
+
+### Structural Reasoning Provenance
+
+An open-source diagnostic tool treating reasoning as structured, inspectable data rather than opaque AI output.
+
+---
+
+## Philosophy
+
+Build analytical instruments, not just applications.
