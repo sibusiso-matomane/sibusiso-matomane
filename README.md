@@ -4,7 +4,6 @@ Systems Risk & Regime Analysis
 Model Reality Divergence Detection  
 Structural Diagnostics for AI & Complex Systems
 
----
 
 ## Focus
 
@@ -18,7 +17,6 @@ Areas of interest:
 - Constraint-driven analysis
 - Coordination failure diagnostics
 
----
 
 ## Current Project
 
@@ -26,7 +24,6 @@ Areas of interest:
 
 An open-source diagnostic tool treating reasoning as structured, inspectable data rather than opaque AI output.
 
----
 
 ## Philosophy
 
