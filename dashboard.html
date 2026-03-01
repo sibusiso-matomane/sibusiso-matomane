@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Compliant Cryptocurrency Architectures in South Africa | Interactive Dashboard</title>
+  <style>
+    :root {
+      --bg: #070b16;
+      --panel: #0e1527;
+      --panel-2: #121c33;
+      --line: #233152;
+      --text: #c8f8ff;
+      --muted: #7e9ab2;
+      --cyan: #00eaff;
+      --amber: #ffb000;
+      --red: #ff4c4c;
+      --green: #20d58f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      background: linear-gradient(180deg, #060a14, #0a1020);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: 0 0 0 1px #0b1224, 0 12px 28px rgba(0,0,0,0.35);
+    }
+
+    .header {
+      padding: 24px;
+      border-left: 3px solid var(--cyan);
+      display: flex;
+      gap: 20px;
+      justify-content: space-between;
+      align-items: start;
+      flex-wrap: wrap;
+    }
+
+    h1 { margin: 0 0 8px 0; color: var(--cyan); font-size: 1.5rem; }
+    h2 { margin: 0; color: var(--amber); font-size: 1rem; }
+    p { margin: 0; line-height: 1.5; }
+    .muted { color: var(--muted); }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-end;
+      min-width: 330px;
+    }
+
+    .switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #0b1326;
+      font-size: 0.8rem;
+    }
+
+    .switch input { accent-color: var(--cyan); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+      padding: 0 20px 20px;
+    }
+
+    .span-12 { grid-column: span 12; }
+    .span-8 { grid-column: span 8; }
+    .span-4 { grid-column: span 4; }
+    .span-6 { grid-column: span 6; }
+
+    @media (max-width: 1080px) {
+      .span-8,.span-4,.span-6 { grid-column: span 12; }
+    }
+
+    .section-title {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      font-size: .9rem;
+      color: var(--amber);
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
+    .content { padding: 14px 16px 16px; }
+
+    .stack-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #2a395f;
+      background: #0a1326;
+      font-size: .8rem;
+    }
+
+    .chip.active { border-color: var(--cyan); box-shadow: inset 0 0 0 1px rgba(0,234,255,.25); }
+
+    .risk-box {
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #091123;
+      margin-bottom: 10px;
+    }
+
+    .risk-score {
+      font-size: 1.4rem;
+      margin: 4px 0;
+    }
+
+    .heat {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: middle;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    .heat.green { color: var(--green); background: var(--green); }
+    .heat.amber { color: var(--amber); background: var(--amber); }
+    .heat.red { color: var(--red); background: var(--red); }
+
+    .matrix, .mapping {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .78rem;
+    }
+
+    .matrix th, .matrix td, .mapping th, .mapping td {
+      border: 1px solid #243153;
+      padding: 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .matrix th, .mapping th {
+      color: var(--amber);
+      background: #0b142a;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .accordion details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      background: #0a1326;
+      overflow: hidden;
+    }
+
+    .accordion summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 10px 12px;
+      color: var(--cyan);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .accordion summary::-webkit-details-marker { display: none; }
+    .accordion .inner { padding: 0 12px 10px; color: var(--muted); }
+
+    .legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: .78rem;
+      color: var(--muted);
+    }
+
+    .footer {
+      padding: 16px 20px 22px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="panel">
+      <div class="header">
+        <div>
+          <h1>Compliant Cryptocurrency Architectures in South Africa</h1>
+          <p class="muted">Interactive regulatory modeling dashboard | terminal-grade policy intelligence</p>
+        </div>
+        <div class="toolbar">
+          <label class="switch"><input id="fiatToggle" type="checkbox" checked /> Fiat Rails</label>
+          <label class="switch"><input id="custodyToggle" type="checkbox" checked /> Custodial Services</label>
+          <label class="switch"><input id="retailToggle" type="checkbox" checked /> Retail Public Access</label>
+          <label class="switch"><input id="crossBorderToggle" type="checkbox" /> Cross-Border Flows</label>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="panel span-8">
+          <div class="section-title">Real-Time Compliance Stack Visualizer</div>
+          <div class="content">
+            <div id="stackList" class="stack-list"></div>
+          </div>
+        </div>
+
+        <div class="panel span-4">
+          <div class="section-title">Risk Heat Layer</div>
+          <div class="content" id="riskLayer"></div>
+        </div>
+
+        <div class="panel span-12">
+          <div class="section-title">Architecture Comparison Matrix</div>
+          <div class="content" style="overflow:auto; max-height: 350px;">
+            <table class="matrix" id="comparisonTable"></table>
+          </div>
+        </div>
+
+        <div class="panel span-6">
+          <div class="section-title">Expand / Collapse Regulatory Obligations</div>
+          <div class="content accordion" id="obligations"></div>
+        </div>
+
+        <div class="panel span-6">
+          <div class="section-title">SARB / FSCA / FIC Mapping Grid</div>
+          <div class="content" style="overflow:auto; max-height: 340px;">
+            <table class="mapping" id="mappingGrid"></table>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        Model scope: static legal-compliance architecture simulation for design planning only; not legal advice.
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const regulations = {
+      companiesAct: { name: "Companies Act", trigger: () => true },
+      ficaCasp: { name: "FICA CASP Registration", trigger: s => s.fiat || s.custody },
+      faisFsp: { name: "FAIS / FSP Licensing", trigger: s => s.retail || s.custody },
+      sarsTax: { name: "SARS Tax Reporting", trigger: () => true },
+      sarb: { name: "SARB Exchange Control", trigger: s => s.crossBorder || s.fiat },
+      arb: { name: "ARB Advertising Code", trigger: s => s.retail },
+      popia: { name: "POPIA Data Protection", trigger: () => true },
+      ecta: { name: "ECTA e-Contracts/Cryptography", trigger: () => true },
+      nca: { name: "NCA/NCR Credit Rules", trigger: s => s.arch === "lending" && s.retail }
+    };
+
+    const architectures = [
+      { id: "exchange", name: "Centralized Exchange", custody: true, fiat: true, retail: true, riskBase: 68 },
+      { id: "dex", name: "DEX DAO-Coop", custody: false, fiat: false, retail: true, riskBase: 42 },
+      { id: "stablecoin", name: "Bank-Backed Stablecoin", custody: true, fiat: true, retail: true, riskBase: 61 },
+      { id: "security", name: "Tokenized Equity", custody: true, fiat: true, retail: false, riskBase: 64 },
+      { id: "lending", name: "Crypto Lending Market", custody: true, fiat: true, retail: true, riskBase: 78 },
+      { id: "dao", name: "DAO + SA Wrapper", custody: true, fiat: false, retail: true, riskBase: 57 }
+    ];
+
+    const obligationData = [
+      ["FICA CASP", "Register as accountable institution, run CDD/KYC and suspicious transaction reporting."],
+      ["FAIS/FSP", "Obtain fit-and-proper approved FSP license when financial intermediation/advice exists."],
+      ["SARB", "Report and monitor cross-border or fiat-linked transfer exposures through regulated channels."],
+      ["SARS", "Maintain auditable ledgers for fees, token issuance, CGT/income events and VAT treatment."],
+      ["POPIA + ECTA", "Secure personal data, consent controls, lawful processing and enforceable e-contracts."],
+      ["ARB", "Use clear investment-risk disclosures and avoid implied guaranteed returns."]
+    ];
+
+    function getState() {
+      return {
+        fiat: document.getElementById("fiatToggle").checked,
+        custody: document.getElementById("custodyToggle").checked,
+        retail: document.getElementById("retailToggle").checked,
+        crossBorder: document.getElementById("crossBorderToggle").checked
+      };
+    }
+
+    function riskColor(score) {
+      if (score < 45) return "green";
+      if (score < 70) return "amber";
+      return "red";
+    }
+
+    function activeRegulations(state, archId = "") {
+      return Object.values(regulations).filter(r => r.trigger({ ...state, arch: archId }));
+    }
+
+    function renderStack(state) {
+      const stack = activeRegulations(state);
+      const el = document.getElementById("stackList");
+      el.innerHTML = Object.values(regulations).map(r =>
+        `<div class="chip ${stack.includes(r) ? "active" : ""}">${r.name}</div>`
+      ).join("");
+    }
+
+    function renderRisk(state) {
+      const el = document.getElementById("riskLayer");
+      const blocks = architectures.map(a => {
+        let score = a.riskBase;
+        if (!state.fiat) score -= 8;
+        if (!state.custody && a.custody) score -= 6;
+        if (state.crossBorder) score += 10;
+        if (!state.retail) score -= 7;
+        if (a.id === "dex" && state.fiat) score += 12;
+        score = Math.max(15, Math.min(95, score));
+        const color = riskColor(score);
+        return `
+          <div class="risk-box">
+            <div><span class="heat ${color}"></span><strong>${a.name}</strong></div>
+            <div class="risk-score">${score}/100</div>
+            <div class="muted">${color.toUpperCase()} regulatory exposure</div>
+          </div>
+        `;
+      }).join("");
+
+      el.innerHTML = `${blocks}
+        <div class="legend">
+          <span><span class="heat green"></span>Low / structured</span>
+          <span><span class="heat amber"></span>Moderate / conditional</span>
+          <span><span class="heat red"></span>High / licensing-intensive</span>
+        </div>`;
+    }
+
+    function renderComparison(state) {
+      const table = document.getElementById("comparisonTable");
+      const head = `
+        <tr>
+          <th>Architecture</th>
+          <th>Fiat Trigger</th>
+          <th>Custody Trigger</th>
+          <th>Key Regulators</th>
+          <th>Likely License Burden</th>
+        </tr>`;
+      const rows = architectures.map(a => {
+        const regs = activeRegulations({ ...state, fiat: state.fiat && a.fiat, custody: state.custody && a.custody, retail: state.retail && a.retail }, a.id)
+          .map(r => r.name)
+          .join(", ");
+        const burden = regs.includes("NCA/NCR Credit Rules") ? "High" : regs.includes("FAIS / FSP Licensing") ? "Medium-High" : "Medium";
+        return `<tr>
+          <td>${a.name}</td>
+          <td>${a.fiat && state.fiat ? "Active" : "Off"}</td>
+          <td>${a.custody && state.custody ? "Active" : "Off"}</td>
+          <td>${regs}</td>
+          <td>${burden}</td>
+        </tr>`;
+      }).join("");
+      table.innerHTML = head + rows;
+    }
+
+    function renderObligations() {
+      const el = document.getElementById("obligations");
+      el.innerHTML = obligationData.map(([title, body], i) => `
+        <details ${i === 0 ? "open" : ""}>
+          <summary>${title}<span class="muted">details</span></summary>
+          <div class="inner">${body}</div>
+        </details>
+      `).join("");
+    }
+
+    function renderMapping(state) {
+      const grid = document.getElementById("mappingGrid");
+      const mapRows = [
+        ["SARB", "Exchange control + payment systems", state.fiat || state.crossBorder ? "Active" : "Monitor", "Fiat rails, stablecoin reserve flows"],
+        ["FSCA", "FAIS/FSP + conduct oversight", state.retail || state.custody ? "Active" : "Conditional", "Exchange, advisory, token offerings"],
+        ["FIC", "AML/CFT under FICA", state.fiat || state.custody ? "Active" : "Conditional", "CASP status, travel rule, STR/CTR"],
+        ["SARS", "Tax treatment + reporting", "Active", "Trading fees, token gains, CGT/income"],
+        ["Information Regulator", "POPIA governance", "Active", "Identity data, wallets, KYC records"]
+      ];
+
+      const head = `<tr><th>Authority</th><th>Mandate</th><th>Current State</th><th>Focus Area</th></tr>`;
+      const rows = mapRows.map(([a,b,c,d]) => `<tr><td>${a}</td><td>${b}</td><td>${c}</td><td>${d}</td></tr>`).join("");
+      grid.innerHTML = head + rows;
+    }
+
+    function render() {
+      const state = getState();
+      renderStack(state);
+      renderRisk(state);
+      renderComparison(state);
+      renderMapping(state);
+    }
+
+    document.querySelectorAll("input[type='checkbox']").forEach(i => i.addEventListener("change", render));
+    renderObligations();
+    render();
+  </script>
+</body>
+</html>
